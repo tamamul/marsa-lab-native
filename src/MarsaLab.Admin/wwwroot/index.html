@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="id" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MARSA Lab</title>
+<style>
+:root{--bg:#0b141a;--panel:#13232b;--panel2:#1a2f39;--line:#29424c;--text:#eef8fa;--muted:#9bb1ba;--cyan:#00c2d1;--onc:#00272b;--on:#2ecc71;--off:#7c8b92;--red:#e5484d;--amber:#f5a524}
+[data-theme=light]{--bg:#eef3f5;--panel:#fff;--panel2:#f3f7f8;--line:#d5e0e4;--text:#10242b;--muted:#5d747d;--cyan:#008a96;--onc:#fff;--off:#9aa9af}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 "Segoe UI",system-ui,sans-serif}
+.wrap{max-width:1250px;margin:auto;padding:16px 14px 80px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.sp{flex:1}
+.brand{font-size:22px;font-weight:800}.brand b{color:var(--cyan)}
+.pill{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13px}
+.pill i{width:9px;height:9px;border-radius:50%;background:var(--red)}.pill.ok i{background:var(--on)}
+.btn{background:var(--cyan);color:var(--onc);border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn.sec{background:var(--panel2);color:var(--text);border:1px solid var(--line)}.btn.danger{background:var(--red);color:#fff}
+.btn:active{transform:scale(.98)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat .n{font-size:28px;font-weight:800}.stat .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.stat.on .n{color:var(--on)}
+.main{display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.side{position:sticky;top:12px}
+h2{font-size:16px;margin:0 0 10px}h3{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+input[type=text],textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--text);font:inherit}
+textarea{min-height:76px;resize:vertical}#filter{flex:1;min-width:160px;width:auto}
+.chip{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:99px;padding:6px 12px;cursor:pointer;font:inherit;font-size:13px}
+.chip.act{background:var(--cyan);color:var(--onc);border-color:var(--cyan)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pc{position:relative;background:var(--panel2);border:2px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;user-select:none}
+.pc.sel{border-color:var(--cyan);box-shadow:0 0 0 3px color-mix(in srgb,var(--cyan) 25%,transparent)}
+.pc.off{opacity:.55;cursor:not-allowed}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--off);display:inline-block}.pc.on .dot{background:var(--on)}
+.ck{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;font-weight:800}
+.pc.sel .ck{background:var(--cyan);border-color:var(--cyan);color:var(--onc)}
+.nm{font-weight:700;margin:6px 0 2px;word-break:break-all}.ip,.ago,.muted{color:var(--muted);font-size:12px}
+.empty{color:var(--muted);padding:18px;text-align:center;grid-column:1/-1}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.acts .full{grid-column:1/-1}
+.tpl{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tw{overflow:auto}table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.badge{border-radius:99px;padding:2px 9px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--amber) 25%,transparent);color:var(--amber)}
+.badge.g{background:color-mix(in srgb,var(--on) 25%,transparent);color:var(--on)}.badge.r{background:color-mix(in srgb,var(--red) 25%,transparent);color:var(--red)}
+.bar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--panel);border-top:1px solid var(--line);padding:10px 14px;align-items:center;gap:10px}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--cyan);border-radius:10px;padding:10px 16px;display:none;z-index:9;max-width:92vw}
+dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:18px;max-width:380px}
+dialog::backdrop{background:#0009}.dact{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.foot{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+.shot{width:100%;border-radius:8px;margin-bottom:6px;display:block;background:#000;cursor:zoom-in}
+#view{max-width:96vw}#view img{max-width:100%;max-height:78vh;border-radius:8px;display:block;margin:10px auto;background:#000}
+.tabs{position:sticky;top:0;z-index:6;display:flex;gap:6px;background:var(--bg);padding:6px 0 10px;margin-bottom:6px}
+.tabs a{padding:9px 16px;border-radius:10px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--line);font-weight:600}
+.tabs a.on{background:var(--cyan);color:var(--onc);border-color:var(--cyan)}
+.spin{width:14px;height:14px;border:3px solid var(--line);border-top-color:var(--cyan);border-radius:50%;animation:sp .8s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+.shot.ph{display:grid;place-items:center;aspect-ratio:16/9;background:var(--panel);cursor:default;color:var(--muted);font-size:12px;text-align:center;padding:6px}
+.vh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.vwrap{position:relative;min-height:200px}
+.vload{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);padding:10px}
+.ctlb{background:var(--red);color:#fff;border-radius:8px;padding:6px 10px;margin-top:8px;font-size:13px;font-weight:600}
+#viewImg{touch-action:none;user-select:none}
+@media(max-width:900px){.main{grid-template-columns:1fr}.side{position:static}.bar{display:flex}}
+</style></head><body>
+<main class="wrap">
+<div class="top"><div class="brand"><b>MARSA</b> Lab</div><div class="sp"></div>
+<span class="pill" id="conn"><i></i><span id="connTxt">Menghubungkan...</span></span>
+<button class="btn sec" id="themeBtn" onclick="toggleTheme()">Tema</button></div>
+<nav class="tabs"><a class="on" href="index.html">🖥 Dashboard</a><a href="berkas.html">📁 Berkas &amp; Tugas</a></nav>
+
+<div class="stats"><div class="stat"><div class="n" id="total">0</div><div class="l">Total</div></div>
+<div class="stat on"><div class="n" id="online">0</div><div class="l">Online</div></div>
+<div class="stat"><div class="n" id="offline">0</div><div class="l">Offline</div></div></div>
+
+<div class="main">
+<section class="panel"><h2>Komputer lab</h2>
+<div class="tools"><input type="text" id="filter" placeholder="Cari nama atau IP..." oninput="render()">
+<button class="chip act" data-f="all" onclick="setFilter('all')">Semua</button>
+<button class="chip" data-f="online" onclick="setFilter('online')">Online</button>
+<button class="chip" data-f="offline" onclick="setFilter('offline')">Offline</button></div>
+<button class="chip" id="monBtn" onclick="toggleMonitor()">📺 Pantau layar</button>
+<div class="tools"><button class="btn sec" onclick="selectOnline()">Pilih semua online</button>
+<button class="btn sec" onclick="clearSel()">Kosongkan</button>
+<button class="btn sec" onclick="saveGroup()">+ Simpan kelompok</button></div>
+<div class="tools" id="groups"></div>
+<div class="muted" id="monStat" hidden style="margin-bottom:8px"></div>
+<div class="grid" id="grid"></div></section>
+
+<aside class="panel side" id="control"><h2>Kontrol</h2>
+<div class="muted">Target: <b id="selinfo">Semua komputer online</b></div>
+<h3>Pesan / alamat website / alasan</h3>
+<textarea id="message" maxlength="300" placeholder="Isi untuk pengumuman, buka website (https://...), atau alasan restart/matikan"></textarea>
+<div class="tpl" id="tpl"></div>
+<h3>Komunikasi &amp; layar</h3>
+<div class="acts"><button class="btn full" onclick="send('announce')">Kirim pengumuman</button>
+<button class="btn sec" onclick="send('lock')">Kunci layar</button>
+<button class="btn sec" onclick="send('open-url')">Buka website</button>
+<button class="btn sec full" onclick="send('open-share')">Buka halaman tugas di PC siswa</button></div>
+<h3>Daya</h3>
+<div class="acts"><button class="btn danger" onclick="send('restart')">Restart</button>
+<button class="btn danger" onclick="send('shutdown')">Matikan</button>
+<button class="btn sec full" onclick="send('cancel-shutdown')">Batalkan restart/matikan</button></div>
+</aside></div>
+
+<section class="panel"><h2>Riwayat perintah</h2>
+<div class="tw"><table><thead><tr><th>Waktu</th><th>Komputer</th><th>Perintah</th><th>Status</th><th>Hasil</th></tr></thead><tbody id="history"></tbody></table></div></section>
+<div class="foot">MARSA Lab · Jaringan lokal. Gunakan hanya pada komputer lab yang dikelola sekolah.</div>
+</main>
+
+<div class="bar"><div id="selbar" style="flex:1"></div><button class="btn" onclick="document.getElementById('control').scrollIntoView({behavior:'smooth'})">Kontrol ↓</button></div>
+<div class="toast" id="toast"></div>
+<dialog id="dlg"><form method="dialog"><div id="dlgText"></div>
+<div class="dact"><button class="btn sec" value="no">Batal</button><button class="btn" value="yes">Ya, kirim</button></div></form></dialog>
+
+<dialog id="view"><div class="vh"><b id="viewTitle"></b><span id="viewAge" class="muted"></span><span class="sp"></span>
+<button class="btn sec" id="ctlBtn" onclick="toggleCtl()">🖱 Kontrol: Mati</button>
+<button class="btn sec" onclick="document.getElementById('view').close()">Tutup</button></div>
+<div class="ctlb" id="ctlBanner" hidden>KONTROL AKTIF — klik dan ketik di gambar dikirim ke PC ini (hasil tampil ±1 detik kemudian)</div>
+<div class="vwrap"><img id="viewImg" alt=""><div class="vload" id="viewLoad"></div></div></dialog> 
+ 
+<script>
+const $=id=>document.getElementById(id);
+function h(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+let TOKEN=localStorage.getItem('marsaToken')||'';
+document.body.style.visibility='hidden';
+const headers={'X-Marsa-Token':TOKEN,'Content-Type':'application/json'};
+let clients=[],byId={},filterSt='all';const sel=new Set();
+
+/* ---- tema ---- */
+function setTheme(t){document.documentElement.dataset.theme=t;localStorage.setItem('marsaTheme',t);$('themeBtn').textContent=t==='dark'?'☀ Terang':'🌙 Gelap'}
+function toggleTheme(){setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark')}
+setTheme(localStorage.getItem('marsaTheme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));
+
+/* ---- util ---- */
+const fmt=d=>new Date(d).toLocaleString('id-ID',{hour12:false,day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const ago=d=>{const s=Math.max(0,(Date.now()-new Date(d))/1000);return s<60?Math.round(s)+' dtk lalu':s<3600?Math.round(s/60)+' mnt lalu':s<86400?Math.round(s/3600)+' jam lalu':Math.round(s/86400)+' hari lalu'};
+const LABELS={'announce':'Pengumuman','lock':'Kunci layar','restart':'Restart','shutdown':'Matikan','cancel-shutdown':'Batalkan daya','open-share':'Buka halaman tugas','open-url':'Buka website'};
+const label=t=>LABELS[t]||t;
+function toast(msg){const el=$('toast');el.textContent=msg;el.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>el.style.display='none',5000)}
+function ask(text){return new Promise(r=>{$('dlgText').textContent=text;const d=$('dlg');d.returnValue='';d.onclose=()=>r(d.returnValue==='yes');d.showModal()})}
+async function api(url,opts={}){const r=await fetch(url,{...opts,headers:{...headers,...opts.headers}});let body={};try{body=await r.json()}catch{}
+ if(r.status===401)localStorage.removeItem('marsaToken');if(!r.ok)throw Error(body.error||('HTTP '+r.status));return body}
+
+/* ---- gerbang token ---- */
+async function gate(){
+ for(;;){
+  if(!TOKEN){TOKEN=(prompt('Masukkan token admin lab:')||'').trim();
+   if(!TOKEN){document.body.innerHTML='<p style="padding:30px">Token diperlukan. Tekan F5 untuk mengulang.</p>';document.body.style.visibility='visible';return false}}
+  try{const r=await fetch('/api/summary',{headers:{'X-Marsa-Token':TOKEN}});
+   if(r.ok){localStorage.setItem('marsaToken',TOKEN);headers['X-Marsa-Token']=TOKEN;document.body.style.visibility='visible';return true}
+   if(r.status===401){alert('Token salah, coba lagi.');TOKEN='';localStorage.removeItem('marsaToken');continue}
+  }catch{}
+  await new Promise(s=>setTimeout(s,1000));
+ }
+}
+
+/* ---- kelompok (tersimpan di browser ini) ---- */
+const getGroups=()=>{try{return JSON.parse(localStorage.getItem('marsaGroups')||'{}')}catch{return{}}};
+const setGroups=g=>localStorage.setItem('marsaGroups',JSON.stringify(g));
+function saveGroup(){
+ if(!sel.size){toast('Klik komputer dulu untuk dipilih.');return}
+ const n=(prompt('Nama kelompok (contoh: Baris A):')||'').trim();if(!n)return;
+ const g=getGroups();g[n]=[...sel];setGroups(g);toast('Kelompok "'+n+'" disimpan.');renderGroups()}
+function renderGroups(){
+ const box=$('groups');box.replaceChildren();const gs=getGroups();
+ if(!Object.keys(gs).length){box.append(h('span','muted','Belum ada kelompok. Pilih beberapa komputer lalu "+ Simpan kelompok".'));return}
+ for(const n of Object.keys(gs)){
+  const b=h('button','chip',n+' ('+gs[n].length+')');
+  b.onclick=()=>{sel.clear();gs[n].forEach(id=>{if(byId[id]&&byId[id].status==='Online')sel.add(id)});render()};
+  const x=h('span',null,' ×');x.style.opacity='.6';
+  x.onclick=async e=>{e.stopPropagation();if(await ask('Hapus kelompok "'+n+'"?')){const g2=getGroups();delete g2[n];setGroups(g2);renderGroups()}};
+  b.append(x);box.append(b)}}
+
+/* ---- tampilan ---- */
+function setFilter(f){filterSt=f;document.querySelectorAll('[data-f]').forEach(b=>b.classList.toggle('act',b.dataset.f===f));render()}
+function selectOnline(){sel.clear();clients.filter(c=>c.status==='Online').forEach(c=>sel.add(c.clientId));render()}
+function clearSel(){sel.clear();render()}
+function render(){
+ const on=clients.filter(c=>c.status==='Online').length;
+ $('total').textContent=clients.length;$('online').textContent=on;$('offline').textContent=clients.length-on;
+ for(const id of [...sel])if(!byId[id])sel.delete(id);
+ const q=$('filter').value.toLowerCase();
+ const list=clients.filter(c=>(filterSt==='all'||c.status.toLowerCase()===filterSt)&&(c.computerName+' '+c.ipAddress).toLowerCase().includes(q));
+ const g=$('grid');g.replaceChildren();
+ if(!list.length)g.append(h('div','empty',clients.length?'Tidak ada hasil.':'Belum ada client terhubung.'));
+ for(const c of list){
+  const isOn=c.status==='Online',s=sel.has(c.clientId);
+  const card=h('div','pc '+(isOn?'on':'off')+(s?' sel':''));
+    const sh=shots[c.clientId];
+  if(monitor&&isOn){
+   if(sh&&Date.now()-new Date(sh.t)<20000){const im=h('img','shot');im.src='data:image/jpeg;base64,'+sh.jpg;im.onclick=e=>{e.stopPropagation();openView(c.clientId)};card.append(im)}
+   else{const ph=h('div','shot ph');if(Date.now()-monStart<15000){ph.append(h('span','spin'),document.createTextNode(' Menunggu gambar...'))}else ph.textContent='Tidak ada gambar (layar terkunci / client belum versi baru)';card.append(ph)}}
+  card.append(h('div','ck',s?'✓':''),h('span','dot'),h('div','nm',c.computerName),h('div','ip',c.ipAddress),h('div','ago',isOn?'Online':'Terakhir '+ago(c.lastSeenUtc)));
+  if(isOn){const v=h('button','chip','🔍 Lihat');v.style.marginTop='6px';v.onclick=e=>{e.stopPropagation();openView(c.clientId)};card.append(v)}
+  card.onclick=()=>{if(!isOn)return;s?sel.delete(c.clientId):sel.add(c.clientId);render()};
+  g.append(card)}
+ const txt=sel.size?sel.size+' komputer dipilih':'Semua komputer online ('+on+')';
+ $('selinfo').textContent=txt;$('selbar').textContent='Target: '+txt;
+ const ms=$('monStat');ms.hidden=!monitor;
+ if(monitor){
+  const fresh=clients.filter(c=>c.status==='Online'&&shots[c.clientId]&&Date.now()-new Date(shots[c.clientId].t)<20000).length;
+  ms.replaceChildren();
+  if(fresh<on&&Date.now()-monStart<15000){ms.append(h('span','spin'),document.createTextNode(' '))}
+  ms.append(document.createTextNode('Memantau '+on+' PC online · '+fresh+' sudah menampilkan gambar · diperbarui tiap ±3 detik'))}}
+/* ---- kirim perintah ---- */
+async function send(type){
+ const message=$('message').value.trim();
+ if(type==='announce'&&!message){toast('Isi pesan pengumuman dahulu.');return}
+ if(type==='open-url'&&!/^https?:\/\//i.test(message)){toast('Isi alamat website (http/https) di kotak pesan.');return}
+ const ids=[...sel].filter(id=>byId[id]&&byId[id].status==='Online');
+ if(sel.size&&!ids.length){toast('Komputer yang dipilih sedang offline.');return}
+ const online=clients.filter(c=>c.status==='Online').length;
+ const scope=ids.length?ids.length+' komputer terpilih':'SEMUA komputer online ('+online+')';
+ if(!await ask(label(type)+' → '+scope+'?'))return;
+ try{const r=await api('/api/commands',{method:'POST',body:JSON.stringify({type,targetClientId:'*',targetClientIds:ids.length?ids:null,message})});
+  toast('Perintah '+label(type)+' masuk antrean untuk '+r.queued+' komputer.');await loadRecent()}
+ catch(e){toast('Gagal: '+e.message)}}
+
+/* ---- data ---- */
+function conn(ok){$('conn').classList.toggle('ok',ok);$('connTxt').textContent=ok?'Server terhubung':'Server tidak terhubung'}
+async function loadClients(){try{clients=await api('/api/clients');byId=Object.fromEntries(clients.map(c=>[c.clientId,c]));conn(true);render()}catch{conn(false)}}
+async function loadRecent(){
+ try{const data=await api('/api/commands/recent');const rows=$('history');rows.replaceChildren();
+  if(!data.length){const tr=h('tr'),td=h('td','empty','Belum ada perintah.');td.colSpan=5;tr.append(td);rows.append(tr);return}
+  for(const c of data){
+   const tr=h('tr');const nm=byId[c.clientId]?byId[c.clientId].computerName:c.clientId;
+   for(const v of [fmt(c.createdUtc),nm,label(c.type)]){tr.append(h('td',null,v))}
+   const st=h('td'),cls=/succ|done|ok|selesai/i.test(c.status)?'g':/fail|gagal|error/i.test(c.status)?'r':'';
+   st.append(h('span','badge '+cls,c.status));tr.append(st,h('td',null,c.result||c.message||'—'));rows.append(tr)}
+ }catch{}}
+
+/* ---- templat pesan ---- */
+for(const t of ['Kumpulkan tugas 5 menit lagi.','Harap tenang dan kerjakan sendiri.','Pelajaran selesai, simpan pekerjaan Anda.']){
+ const b=h('button','chip',t);b.onclick=()=>{$('message').value=t};$('tpl').append(b)}
+
+/* ---- pantau layar & kontrol jarak jauh ---- */
+let monitor=false,monStart=0,shots={},viewId=null,viewTimer=null,viewBusy=false,viewSince=0,viewGot=false;
+let ctl=false,ctlBuf=[],lastMove=0;
+async function monitorTick(){
+ if(!monitor)return;
+ try{
+  const ids=clients.filter(c=>c.status==='Online'&&c.clientId!==viewId).map(c=>c.clientId);
+  if(ids.length)await api('/api/watch',{method:'POST',body:JSON.stringify({clientIds:ids,mode:'thumb',seconds:15})});
+  shots=await api('/api/screens');render()
+ }catch{}}
+function toggleMonitor(){
+ monitor=!monitor;monStart=Date.now();$('monBtn').classList.toggle('act',monitor);
+ if(monitor)toast('Memantau dimulai. Gambar pertama muncul dalam ±5 detik, mohon tunggu.');else shots={};
+ render();monitorTick()}
+function setLoad(on,text){
+ const l=$('viewLoad');l.style.display=on?'grid':'none';l.replaceChildren();
+ if(on){const d=h('div');d.append(h('span','spin'),document.createTextNode(' '+text));l.append(d)}}
+function openView(id){
+ viewId=id;viewSince=Date.now();viewGot=false;ctl=false;ctlBuf=[];syncCtl();
+ $('viewTitle').textContent=byId[id]?byId[id].computerName:id;$('viewAge').textContent='';
+ const im=$('viewImg');im.removeAttribute('src');im.style.visibility='hidden';
+ setLoad(true,'Menyambung ke layar PC... gambar pertama muncul dalam ±5 detik.');
+ $('view').showModal();viewTick();viewTimer=setInterval(viewTick,1000)}
+async function viewTick(){
+ if(!viewId||viewBusy)return;viewBusy=true;
+ try{
+  await api('/api/watch',{method:'POST',body:JSON.stringify({clientIds:[viewId],mode:'full',seconds:10})});
+  const f=await api('/api/screens/'+encodeURIComponent(viewId));
+  if(viewId){const im=$('viewImg');im.src='data:image/jpeg;base64,'+f.jpg;im.style.visibility='visible';viewGot=true;setLoad(false);$('viewAge').textContent='· diperbarui '+ago(f.t)}
+ }catch{
+  if(viewId&&!viewGot&&Date.now()-viewSince>15000)setLoad(true,'Belum ada gambar. Pastikan client sudah versi terbaru dan layar PC tidak terkunci.');
+ }
+ viewBusy=false}
+$('view').addEventListener('close',()=>{clearInterval(viewTimer);viewId=null;ctl=false;ctlBuf=[]});
+$('view').addEventListener('cancel',e=>{if(ctl)e.preventDefault()});
+
+/* kontrol jarak jauh */
+function syncCtl(){
+ const b=$('ctlBtn');b.textContent='🖱 Kontrol: '+(ctl?'AKTIF':'Mati');
+ b.classList.toggle('danger',ctl);b.classList.toggle('sec',!ctl);
+ $('ctlBanner').hidden=!ctl;$('viewImg').style.cursor=ctl?'crosshair':'default'}
+function toggleCtl(){ctl=!ctl;ctlBuf=[];syncCtl();if(ctl)toast('Kontrol aktif: klik dan ketik di gambar. Hasilnya tampil ±1 detik kemudian.')}
+function ctlPush(ev){ctlBuf.push(ev);if(ctlBuf.length>=60)ctlFlush()}
+async function ctlFlush(){
+ if(!ctlBuf.length||!viewId)return;const batch=ctlBuf.splice(0,60);
+ try{await api('/api/control/'+encodeURIComponent(viewId),{method:'POST',body:JSON.stringify(batch)})}
+ catch(e){toast('Kontrol gagal: '+e.message)}}
+const vi=$('viewImg'),BTN=['left','middle','right'];
+const pos=e=>{const r=vi.getBoundingClientRect();return{x:Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),y:Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))}};
+vi.addEventListener('dragstart',e=>e.preventDefault());
+vi.addEventListener('contextmenu',e=>{if(ctl)e.preventDefault()});
+vi.addEventListener('pointerdown',e=>{if(!ctl)return;e.preventDefault();vi.setPointerCapture(e.pointerId);ctlPush({t:'down',...pos(e),b:BTN[e.button]||'left'})});
+vi.addEventListener('pointerup',e=>{if(!ctl)return;e.preventDefault();ctlPush({t:'up',...pos(e),b:BTN[e.button]||'left'})});
+vi.addEventListener('pointermove',e=>{if(!ctl||!e.buttons||Date.now()-lastMove<80)return;lastMove=Date.now();ctlPush({t:'move',...pos(e)})});
+vi.addEventListener('wheel',e=>{if(!ctl)return;e.preventDefault();ctlPush({t:'wheel',...pos(e),d:e.deltaY<0?120:-120})},{passive:false});
+const VK={Backspace:8,Tab:9,Enter:13,Escape:27,' ':32,PageUp:33,PageDown:34,End:35,Home:36,ArrowLeft:37,ArrowUp:38,ArrowRight:39,ArrowDown:40,Insert:45,Delete:46};
+function vkOf(e){
+ if(VK[e.key])return VK[e.key];
+ if(/^F([1-9]|1[0-2])$/.test(e.key))return 111+Number(e.key.slice(1));
+ if(e.key.length===1){const c=e.key.toUpperCase().charCodeAt(0);if((c>=65&&c<=90)||(c>=48&&c<=57))return c}
+ return 0}
+document.addEventListener('keydown',e=>{
+ if(!ctl||!viewId||!$('view').open)return;
+ e.preventDefault();
+ const mods=[];if(e.ctrlKey)mods.push('ctrl');if(e.shiftKey)mods.push('shift');if(e.altKey)mods.push('alt');
+ if(e.key.length===1&&!e.ctrlKey&&!e.altKey&&!e.metaKey){ctlPush({t:'text',s:e.key});return}
+ const vk=vkOf(e);if(vk)ctlPush({t:'key',vk,mods})
+},true);
+setInterval(ctlFlush,120);
+setInterval(monitorTick,4000);
+ 
+renderGroups();
+gate().then(ok=>{if(!ok)return;loadClients();loadRecent();setInterval(loadClients,3000);setInterval(loadRecent,5000)});
+</script></body></html>
