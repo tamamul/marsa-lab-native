@@ -1,0 +1,44 @@
+<Window x:Class="MarsaLab.Desktop.ViewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Layar PC" Width="1120" Height="740" MinWidth="680" MinHeight="460"
+        Background="{DynamicResource Bg}" Foreground="{DynamicResource Text}"
+        FontFamily="Segoe UI" FontSize="14" WindowStartupLocation="CenterOwner"
+        Loaded="Window_Loaded" Closed="Window_Closed"
+        PreviewKeyDown="Window_PreviewKeyDown" PreviewTextInput="Window_PreviewTextInput">
+  <Grid Margin="14">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <DockPanel Grid.Row="0" Margin="0,0,0,10">
+      <Button DockPanel.Dock="Right" Style="{StaticResource BtnSec}" Content="Tutup" Focusable="False" Margin="8,0,0,0" Click="Close_Click"/>
+      <Button x:Name="CtlBtn" DockPanel.Dock="Right" Style="{StaticResource BtnSec}" Content="🖱 Kontrol: Mati" Focusable="False" Click="Ctl_Click"/>
+      <TextBlock x:Name="TitleText" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+      <TextBlock x:Name="AgeText" Margin="12,0,0,0" Foreground="{DynamicResource Muted}" VerticalAlignment="Center"/>
+    </DockPanel>
+
+    <Border x:Name="CtlBanner" Grid.Row="1" Visibility="Collapsed" Background="{DynamicResource Danger}" CornerRadius="8" Padding="12,7" Margin="0,0,0,10">
+      <TextBlock Foreground="White" FontWeight="SemiBold" TextWrapping="Wrap"
+                 Text="KONTROL AKTIF — klik dan ketik di layar ini dikirim ke PC siswa (hasil tampil ±1 detik kemudian)"/>
+    </Border>
+
+    <Border Grid.Row="2" Background="Black" CornerRadius="10" ClipToBounds="True">
+      <Grid>
+        <Viewbox Stretch="Uniform">
+          <Image x:Name="Screen" Stretch="None"
+                 MouseLeftButtonDown="Screen_MouseDown" MouseLeftButtonUp="Screen_MouseUp"
+                 MouseRightButtonDown="Screen_MouseDown" MouseRightButtonUp="Screen_MouseUp"
+                 MouseMove="Screen_MouseMove" MouseWheel="Screen_MouseWheel"/>
+        </Viewbox>
+        <StackPanel x:Name="LoadBox" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+          <ProgressBar IsIndeterminate="True" Width="180" Height="6" Foreground="{DynamicResource Accent}" Background="{DynamicResource Line}" BorderThickness="0"/>
+          <TextBlock x:Name="LoadText" Margin="0,12,0,0" Foreground="#9BB1BA" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="420"
+                     Text="Menyambung ke layar PC... gambar pertama muncul dalam ±5 detik."/>
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

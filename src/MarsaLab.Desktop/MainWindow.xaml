@@ -1,0 +1,381 @@
+<Window x:Class="MarsaLab.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MARSA Lab" Width="1340" Height="840" MinWidth="1020" MinHeight="660"
+        Background="{DynamicResource Bg}" Foreground="{DynamicResource Text}"
+        FontFamily="Segoe UI" FontSize="14" WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded" Closed="Window_Closed">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="210"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <!-- ===== Sidebar ===== -->
+    <Border Grid.Column="0" Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,1,0" Padding="14">
+      <DockPanel LastChildFill="False">
+        <StackPanel DockPanel.Dock="Top">
+          <StackPanel Orientation="Horizontal" Margin="6,6,0,24">
+            <TextBlock Text="MARSA" FontSize="22" FontWeight="ExtraBold" Foreground="{DynamicResource Accent}"/>
+            <TextBlock Text=" Lab" FontSize="22" FontWeight="ExtraBold"/>
+          </StackPanel>
+          <RadioButton x:Name="NavDash" Style="{StaticResource Nav}" GroupName="nav" IsChecked="True" Content="🖥   Dashboard" Checked="Nav_Checked"/>
+          <RadioButton x:Name="NavHist" Style="{StaticResource Nav}" GroupName="nav" Content="🕘   Riwayat perintah" Checked="Nav_Checked"/>
+          <RadioButton x:Name="NavFiles" Style="{StaticResource Nav}" GroupName="nav" Content="📁   Berkas &amp; Tugas" Checked="Nav_Checked"/>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom">
+          <StackPanel Orientation="Horizontal" Margin="4,0,0,12">
+            <Ellipse x:Name="ConnDot" Width="10" Height="10" Fill="{DynamicResource Danger}"/>
+            <TextBlock x:Name="ConnText" Text="Menghubungkan..." Margin="8,0,0,0" FontSize="12" Foreground="{DynamicResource Muted}"/>
+          </StackPanel>
+          <Button x:Name="ThemeBtn" Style="{StaticResource BtnSec}" Content="☀   Tema terang" HorizontalContentAlignment="Left" Click="Theme_Click"/>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <!-- ===== Konten ===== -->
+    <Grid Grid.Column="1" Margin="18">
+
+      <!-- DASHBOARD -->
+      <Grid x:Name="DashPanel">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <UniformGrid Grid.Row="0" Rows="1" Margin="0,0,0,14">
+          <Border Style="{StaticResource Card}" Margin="0,0,10,0">
+            <StackPanel>
+              <TextBlock x:Name="TotalText" Text="0" FontSize="30" FontWeight="ExtraBold"/>
+              <TextBlock Text="TOTAL KOMPUTER" FontSize="11" Foreground="{DynamicResource Muted}"/>
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource Card}" Margin="0,0,10,0">
+            <StackPanel>
+              <TextBlock x:Name="OnlineText" Text="0" FontSize="30" FontWeight="ExtraBold" Foreground="{DynamicResource Ok}"/>
+              <TextBlock Text="ONLINE" FontSize="11" Foreground="{DynamicResource Muted}"/>
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock x:Name="OfflineText" Text="0" FontSize="30" FontWeight="ExtraBold"/>
+              <TextBlock Text="OFFLINE" FontSize="11" Foreground="{DynamicResource Muted}"/>
+            </StackPanel>
+          </Border>
+        </UniformGrid>
+
+        <Grid Grid.Row="1">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="14"/>
+            <ColumnDefinition Width="350"/>
+          </Grid.ColumnDefinitions>
+
+          <!-- Daftar PC -->
+          <Border Grid.Column="0" Style="{StaticResource Card}">
+            <DockPanel>
+              <StackPanel DockPanel.Dock="Top">
+                <DockPanel Margin="0,0,0,10">
+                  <ToggleButton x:Name="MonBtn" DockPanel.Dock="Right" Style="{StaticResource PillToggle}" Content="📺 Pantau layar" Checked="Mon_Changed" Unchecked="Mon_Changed"/>
+                  <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <RadioButton Style="{StaticResource FilterChip}" GroupName="flt" IsChecked="True" Content="Semua" Tag="all" Checked="Filter_Checked"/>
+                    <RadioButton Style="{StaticResource FilterChip}" GroupName="flt" Content="Online" Tag="online" Checked="Filter_Checked"/>
+                    <RadioButton Style="{StaticResource FilterChip}" GroupName="flt" Content="Offline" Tag="offline" Checked="Filter_Checked"/>
+                  </StackPanel>
+                  <TextBox x:Name="SearchBox" Style="{StaticResource Tb}" TextChanged="Search_Changed"/>
+                </DockPanel>
+                <WrapPanel Margin="0,0,0,2">
+                  <Button Style="{StaticResource Chip}" Content="Pilih semua online" Click="SelectOnline_Click"/>
+                  <Button Style="{StaticResource Chip}" Content="Kosongkan pilihan" Click="ClearSel_Click"/>
+                  <Button Style="{StaticResource Chip}" Content="+ Simpan sebagai kelompok" Click="SaveGroup_Click"/>
+                </WrapPanel>
+                <ItemsControl x:Name="GroupList">
+                  <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Button Style="{StaticResource Chip}" Content="{Binding Label}" Tag="{Binding Name}" Click="Group_Click">
+                        <Button.ContextMenu>
+                          <ContextMenu><MenuItem Header="Hapus kelompok" Click="GroupDelete_Click"/></ContextMenu>
+                        </Button.ContextMenu>
+                      </Button>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock x:Name="GroupHint" Text="Belum ada kelompok. Pilih beberapa komputer lalu simpan sebagai kelompok (klik kanan kelompok untuk menghapus)." FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,0,0,8" TextWrapping="Wrap"/>
+                <Border x:Name="MonBar" Visibility="Collapsed" Margin="0,0,0,10" Padding="10,8" CornerRadius="10" Background="{DynamicResource Panel2}">
+                  <StackPanel Orientation="Horizontal">
+                    <ProgressBar x:Name="MonProg" IsIndeterminate="True" Width="70" Height="6" Margin="0,0,10,0" Foreground="{DynamicResource Accent}" Background="{DynamicResource Line}" BorderThickness="0"/>
+                    <TextBlock x:Name="MonText" FontSize="12" Foreground="{DynamicResource Muted}" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+
+              <Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                  <ItemsControl x:Name="PcList">
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Border Width="178" Margin="0,0,10,10" CornerRadius="12" BorderThickness="2" Background="{DynamicResource Panel2}" Cursor="Hand" MouseLeftButtonUp="Card_Click">
+                          <Border.Style>
+                            <Style TargetType="Border">
+                              <Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                  <Setter Property="BorderBrush" Value="{DynamicResource Accent}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsOnline}" Value="False">
+                                  <Setter Property="Opacity" Value="0.55"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Border.Style>
+                          <StackPanel>
+                            <Grid Height="100" Margin="6,6,6,0">
+                              <Border CornerRadius="8" Background="{DynamicResource Bg}" ClipToBounds="True">
+                                <Grid>
+                                  <Image Source="{Binding Thumb}" Stretch="UniformToFill" Visibility="{Binding HasThumb, Converter={StaticResource B2V}}"/>
+                                  <TextBlock Text="{Binding Placeholder}" FontSize="11" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="8,0" Visibility="{Binding ShowPlaceholder, Converter={StaticResource B2V}}"/>
+                                  <TextBlock Text="🖥" FontSize="30" Opacity="0.25" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ShowIcon, Converter={StaticResource B2V}}"/>
+                                </Grid>
+                              </Border>
+                              <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="6" Width="22" Height="22" CornerRadius="6" Background="{DynamicResource Accent}" Visibility="{Binding IsSelected, Converter={StaticResource B2V}}">
+                                <TextBlock Text="✓" FontWeight="Bold" Foreground="{DynamicResource OnAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                              </Border>
+                            </Grid>
+                            <StackPanel Margin="10,8,10,10">
+                              <DockPanel>
+                                <Ellipse DockPanel.Dock="Left" Width="9" Height="9" Margin="0,0,7,0">
+                                  <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                      <Setter Property="Fill" Value="{DynamicResource Muted}"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsOnline}" Value="True">
+                                          <Setter Property="Fill" Value="{DynamicResource Ok}"/>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                              </DockPanel>
+                              <TextBlock Text="{Binding Ip}" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                              <TextBlock Text="{Binding SubText}" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                              <Button Style="{StaticResource Chip}" Content="🔍 Lihat &amp; kontrol" Margin="0,8,0,0" HorizontalAlignment="Left" Click="Lihat_Click" Visibility="{Binding IsOnline, Converter={StaticResource B2V}}"/>
+                            </StackPanel>
+                          </StackPanel>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+                <TextBlock x:Name="EmptyText" Text="Belum ada client terhubung." Foreground="{DynamicResource Muted}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+              </Grid>
+            </DockPanel>
+          </Border>
+
+          <!-- Panel kontrol -->
+          <Border Grid.Column="2" Style="{StaticResource Card}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+              <StackPanel>
+                <TextBlock Text="Kontrol" FontSize="17" FontWeight="Bold"/>
+                <TextBlock Margin="0,4,0,0" Foreground="{DynamicResource Muted}" FontSize="12">
+                  <Run Text="Target: "/><Run x:Name="SelText" Text="Semua komputer online" FontWeight="Bold" Foreground="{DynamicResource Text}"/>
+                </TextBlock>
+
+                <TextBlock Text="PESAN / ALAMAT WEBSITE / ALASAN" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,16,0,6"/>
+                <TextBox x:Name="MsgBox" Style="{StaticResource Tb}" Height="92" TextWrapping="Wrap" AcceptsReturn="True" MaxLength="300" VerticalContentAlignment="Top"/>
+                <WrapPanel Margin="0,8,0,0">
+                  <Button Style="{StaticResource Chip}" Content="Kumpulkan tugas 5 menit lagi." Click="Template_Click"/>
+                  <Button Style="{StaticResource Chip}" Content="Harap tenang dan kerjakan sendiri." Click="Template_Click"/>
+                  <Button Style="{StaticResource Chip}" Content="Pelajaran selesai, simpan pekerjaan Anda." Click="Template_Click"/>
+                </WrapPanel>
+
+                <TextBlock Text="KOMUNIKASI &amp; LAYAR" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,14,0,6"/>
+                <Button Style="{StaticResource Btn}" Content="Kirim pengumuman" Tag="announce" Click="Cmd_Click"/>
+                <UniformGrid Columns="2" Margin="0,8,0,0">
+                  <Button Style="{StaticResource BtnSec}" Content="Kunci layar" Tag="lock" Click="Cmd_Click" Margin="0,0,4,0"/>
+                  <Button Style="{StaticResource BtnSec}" Content="Buka website" Tag="open-url" Click="Cmd_Click" Margin="4,0,0,0"/>
+                </UniformGrid>
+                <Button Style="{StaticResource BtnSec}" Content="Buka halaman tugas di PC siswa" Tag="open-share" Click="Cmd_Click" Margin="0,8,0,0"/>
+
+                <TextBlock Text="DAYA" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,14,0,6"/>
+                <UniformGrid Columns="2">
+                  <Button Style="{StaticResource BtnDanger}" Content="Restart" Tag="restart" Click="Cmd_Click" Margin="0,0,4,0"/>
+                  <Button Style="{StaticResource BtnDanger}" Content="Matikan" Tag="shutdown" Click="Cmd_Click" Margin="4,0,0,0"/>
+                </UniformGrid>
+                <Button Style="{StaticResource BtnSec}" Content="Batalkan restart/matikan" Tag="cancel-shutdown" Click="Cmd_Click" Margin="0,8,0,0"/>
+              </StackPanel>
+            </ScrollViewer>
+          </Border>
+        </Grid>
+      </Grid>
+
+      <!-- RIWAYAT -->
+      <Border x:Name="HistPanel" Style="{StaticResource Card}" Visibility="Collapsed">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Text="Riwayat perintah" FontSize="17" FontWeight="Bold" Margin="0,0,0,12"/>
+          <Grid DockPanel.Dock="Top" Margin="8,0,8,6">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="150"/><ColumnDefinition Width="160"/><ColumnDefinition Width="170"/><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="WAKTU" FontSize="11" Foreground="{DynamicResource Muted}"/>
+            <TextBlock Grid.Column="1" Text="KOMPUTER" FontSize="11" Foreground="{DynamicResource Muted}"/>
+            <TextBlock Grid.Column="2" Text="PERINTAH" FontSize="11" Foreground="{DynamicResource Muted}"/>
+            <TextBlock Grid.Column="3" Text="STATUS" FontSize="11" Foreground="{DynamicResource Muted}"/>
+            <TextBlock Grid.Column="4" Text="HASIL" FontSize="11" Foreground="{DynamicResource Muted}"/>
+          </Grid>
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl x:Name="HistList">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="8,9">
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/><ColumnDefinition Width="160"/><ColumnDefinition Width="170"/><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/>
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Grid.Column="0" Text="{Binding Time}" Foreground="{DynamicResource Muted}"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Pc}" TextTrimming="CharacterEllipsis"/>
+                      <TextBlock Grid.Column="2" Text="{Binding Type}"/>
+                      <TextBlock Grid.Column="3" Text="{Binding Status}" FontWeight="SemiBold">
+                        <TextBlock.Style>
+                          <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource Warn}"/>
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding Kind}" Value="ok"><Setter Property="Foreground" Value="{DynamicResource Ok}"/></DataTrigger>
+                              <DataTrigger Binding="{Binding Kind}" Value="fail"><Setter Property="Foreground" Value="{DynamicResource Danger}"/></DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </TextBlock.Style>
+                      </TextBlock>
+                      <TextBlock Grid.Column="4" Text="{Binding Result}" TextWrapping="Wrap" Foreground="{DynamicResource Muted}"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </DockPanel>
+      </Border>
+
+      <!-- ===== Berkas & Tugas ===== -->
+      <Grid x:Name="FilesPanel" Visibility="Collapsed">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource Card}" Margin="0,0,0,14">
+          <StackPanel>
+            <DockPanel>
+              <Button DockPanel.Dock="Right" Style="{StaticResource BtnSec}" Content="Salin alamat" VerticalAlignment="Center" Click="CopyUrl_Click"/>
+              <StackPanel>
+                <TextBlock Text="ALAMAT HALAMAN SISWA" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                <TextBlock x:Name="StudentUrlText" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource Accent}" Margin="0,2,0,0"/>
+                <TextBlock x:Name="StudentCodeText" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/>
+              </StackPanel>
+            </DockPanel>
+            <StackPanel x:Name="FilesBusy" Orientation="Horizontal" Margin="0,10,0,0" Visibility="Collapsed">
+              <ProgressBar IsIndeterminate="True" Width="90" Height="6" Margin="0,0,10,0" Foreground="{DynamicResource Accent}" Background="{DynamicResource Line}" BorderThickness="0"/>
+              <TextBlock x:Name="FilesBusyText" FontSize="12" Foreground="{DynamicResource Muted}"/>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="14"/>
+            <ColumnDefinition Width="1.5*"/>
+          </Grid.ColumnDefinitions>
+
+          <!-- Bagikan file -->
+          <Border Grid.Column="0" Style="{StaticResource Card}" AllowDrop="True" Drop="Share_Drop">
+            <DockPanel>
+              <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                <Button DockPanel.Dock="Right" Style="{StaticResource Btn}" Content="+ Unggah file" Click="Upload_Click"/>
+                <TextBlock Text="Bagikan file ke siswa" FontSize="17" FontWeight="Bold" VerticalAlignment="Center"/>
+              </DockPanel>
+              <TextBlock DockPanel.Dock="Top" Text="Tarik dan lepas file ke kotak ini, atau klik Unggah. Siswa mengunduhnya dari halaman siswa." FontSize="12" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+              <Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                  <ItemsControl x:Name="ShareList">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="4,9">
+                          <Grid>
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="*"/>
+                              <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                              <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                              <TextBlock Text="{Binding Meta}" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource Chip}" Content="Hapus" Margin="8,0,0,0" VerticalAlignment="Center" Click="DeleteFile_Click"/>
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+                <TextBlock x:Name="ShareEmpty" Text="Belum ada file dibagikan." Foreground="{DynamicResource Muted}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+            </DockPanel>
+          </Border>
+
+          <!-- Tugas masuk -->
+          <Border Grid.Column="2" Style="{StaticResource Card}">
+            <DockPanel>
+              <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                <Button DockPanel.Dock="Right" Style="{StaticResource Btn}" Content="Unduh semua (ZIP)" Margin="8,0,0,0" Click="Zip_Click"/>
+                <Button DockPanel.Dock="Right" Style="{StaticResource BtnSec}" Content="Buka folder" Click="OpenFolder_Click"/>
+                <TextBlock Text="Tugas yang dikumpulkan" FontSize="17" FontWeight="Bold" VerticalAlignment="Center"/>
+              </DockPanel>
+              <TextBlock x:Name="SubInfo" DockPanel.Dock="Top" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+              <TextBox x:Name="SubSearch" DockPanel.Dock="Top" Style="{StaticResource Tb}" Margin="0,0,0,10" TextChanged="SubSearch_Changed"/>
+              <Grid DockPanel.Dock="Top" Margin="4,0,4,6">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="80"/><ColumnDefinition Width="110"/><ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="SISWA" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                <TextBlock Grid.Column="1" Text="FILE" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                <TextBlock Grid.Column="2" Text="UKURAN" FontSize="11" Foreground="{DynamicResource Muted}"/>
+                <TextBlock Grid.Column="3" Text="WAKTU" FontSize="11" Foreground="{DynamicResource Muted}"/>
+              </Grid>
+              <Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                  <ItemsControl x:Name="SubList">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="4,8">
+                          <Grid>
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="80"/><ColumnDefinition Width="110"/><ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Student}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Size}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="{Binding Time}" Foreground="{DynamicResource Muted}" VerticalAlignment="Center"/>
+                            <Button Grid.Column="4" Style="{StaticResource Chip}" Content="Unduh" Margin="0" HorizontalAlignment="Right" Click="DownloadSub_Click"/>
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+                <TextBlock x:Name="SubEmpty" Text="Belum ada tugas masuk." Foreground="{DynamicResource Muted}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Grid>
+            </DockPanel>
+          </Border>
+        </Grid>
+      </Grid>
+    </Grid>
+
+    <!-- Toast -->
+    <Border x:Name="ToastBox" Grid.Column="1" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,26"
+            Padding="18,11" CornerRadius="12" Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Accent}" BorderThickness="1">
+      <TextBlock x:Name="ToastText" MaxWidth="640" TextWrapping="Wrap"/>
+    </Border>
+  </Grid>
+</Window>
