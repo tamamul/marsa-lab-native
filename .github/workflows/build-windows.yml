@@ -1,0 +1,63 @@
+
+name: Build MARSA-Lab Windows
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '.github/workflows/build-windows.yml'
+      - 'installer/**'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Ambil kode sumber
+        uses: actions/checkout@v4
+
+      - name: Pasang .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build Admin
+        run: dotnet publish .\src\MarsaLab.Admin\MarsaLab.Admin.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:DebugType=none -o .\dist\guru
+
+      - name: Build Desktop
+        run: dotnet publish .\src\MarsaLab.Desktop\MarsaLab.Desktop.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=none -o .\dist\guru
+
+      - name: Build Client
+        run: dotnet publish .\src\MarsaLab.Client\MarsaLab.Client.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:DebugType=none -o .\dist\client
+
+      - name: Unduh WebView2 bootstrapper
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist\webview2 | Out-Null
+          Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/p/?LinkId=2124703" -OutFile dist\webview2\MicrosoftEdgeWebview2Setup.exe
+
+      - name: Pasang Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Buat installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          & $iscc "/DAppVersion=1.0.${{ github.run_number }}" src\installer\guru.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          & $iscc "/DAppVersion=1.0.${{ github.run_number }}" src\installer\client.iss
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: Simpan hasil build
+        uses: actions/upload-artifact@v4
+        with:
+          name: MARSA-Lab-Installer
+          path: |
+            src/out/MarsaLab-Guru-Setup.exe
+            src/out/MarsaLab-Client-Setup.exe
+          retention-days: 14
