@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MARSA Lab Tugas</title>
+<style>
+:root{color-scheme:dark;--bg:#0b141a;--panel:#13232b;--line:#29424c;--cyan:#00c2d1;--muted:#9bb1ba}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#eef8fa;font:16px Segoe UI,Arial,sans-serif}
+.wrap{max-width:720px;margin:auto;padding:20px 14px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+h1{font-size:24px;margin:0 0 14px}h2{font-size:18px;margin:0 0 10px}.muted{color:var(--muted);font-size:13px}
+input[type=text],input[type=password]{width:100%;background:#0b171d;border:1px solid var(--line);border-radius:9px;padding:11px;color:#fff;font:inherit;margin:6px 0 10px}
+input[type=file]{color:#fff;max-width:100%;margin-bottom:10px}
+button,a.dl{background:var(--cyan);color:#00272b;border:0;border-radius:9px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}.nm{word-break:break-all}#st{margin-top:10px;font-weight:600}
+</style></head><body><main class="wrap">
+<h1><span style="color:var(--cyan)">MARSA</span> Lab Tugas</h1>
+<section class="panel" id="kodebox" hidden><h2>Kode kelas</h2>
+<input type="password" id="kode" placeholder="Masukkan kode dari guru"><button onclick="setKode()">Masuk</button></section>
+<section class="panel"><h2>Ambil file dari guru</h2><div id="files" class="muted">Memuat...</div></section>
+<section class="panel"><h2>Kumpulkan tugas</h2>
+<label>Nama lengkap</label><input type="text" id="nama" maxlength="40" placeholder="Contoh: Sadali">
+<input type="file" id="f"><br><button onclick="kirim()">Kirim tugas</button><div id="st"></div></section>
+</main>
+<script>
+let CODE=sessionStorage.getItem('kode')||'';
+const q=()=>CODE?'?code='+encodeURIComponent(CODE):'';
+const kb=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+document.getElementById('nama').value=localStorage.getItem('siswaNama')||'';
+function setKode(){CODE=document.getElementById('kode').value.trim();sessionStorage.setItem('kode',CODE);loadFiles()}
+async function loadFiles(){const box=document.getElementById('files');
+ try{const r=await fetch('/api/student/files'+q());
+  if(r.status===401){document.getElementById('kodebox').hidden=false;box.textContent='Masukkan kode kelas dulu.';return}
+  document.getElementById('kodebox').hidden=true;const list=await r.json();box.replaceChildren();
+  if(!list.length){box.textContent='Belum ada file dari guru.';return}
+  for(const x of list){const row=document.createElement('div');row.className='row';
+   const nm=document.createElement('div');nm.className='nm';nm.textContent=x.name+' ยท '+kb(x.size);
+   const a=document.createElement('a');a.className='dl';a.textContent='Unduh';a.href='/api/student/files/'+encodeURIComponent(x.name)+q();a.download=x.name;
+   row.append(nm,a);box.append(row)}
+ }catch{box.textContent='Gagal terhubung ke server.'}}
+function kirim(){const nama=document.getElementById('nama').value.trim();const f=document.getElementById('f').files[0];const st=document.getElementById('st');
+ if(nama.length<2){st.textContent='Isi nama dulu.';return}if(!f){st.textContent='Pilih file dulu.';return}
+ localStorage.setItem('siswaNama',nama);
+ const fd=new FormData();fd.append('student',nama);fd.append('file',f);
+ const x=new XMLHttpRequest();x.open('POST','/api/student/submit'+q());
+ x.upload.onprogress=e=>{if(e.lengthComputable)st.textContent='Mengirim... '+Math.round(e.loaded/e.total*100)+'%'};
+ x.onload=()=>{if(x.status===200){st.textContent='โ“ Terkirim: '+f.name;document.getElementById('f').value=''}
+  else if(x.status===413)st.textContent='File terlalu besar.';
+  else if(x.status===401)st.textContent='Kode kelas salah.';
+  else{let m='';try{m=JSON.parse(x.responseText).error}catch{}st.textContent='Gagal: '+(m||x.status)}};
+ x.onerror=()=>st.textContent='Gagal terhubung ke server.';x.send(fd)}
+loadFiles();setInterval(loadFiles,10000);
+</script></body></html>
