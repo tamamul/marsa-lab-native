@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MARSA Lab Berkas &amp; Tugas</title>
+<style>
+:root{color-scheme:dark;--bg:#0b141a;--panel:#13232b;--line:#29424c;--cyan:#00c2d1;--muted:#9bb1ba}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#eef8fa;font:15px Segoe UI,Arial,sans-serif}
+.wrap{max-width:1000px;margin:auto;padding:20px 14px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:0 0 10px}.muted{color:var(--muted);font-size:13px}
+button{background:var(--cyan);color:#00272b;border:0;border-radius:9px;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}
+.danger{background:#b93d4a;color:#fff}input[type=file]{color:#fff;max-width:100%}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);font-size:14px}
+th{font-size:11px;color:var(--muted);text-transform:uppercase}.tw{overflow:auto}#err{color:#ff7777}a{color:var(--cyan)}
+</style></head><body><main class="wrap">
+<nav class="tabs"><a href="index.html">🖥 Dashboard</a><a class="on" href="berkas.html">📁 Berkas &amp; Tugas</a></nav>
+<h1>Berkas &amp; Tugas</h1>
+<div class="muted">Alamat untuk siswa: <b id="url"></b> ยท <a href="index.html">โKontrol komputer</a></div>
+<div id="err"></div>
+<section class="panel" style="margin-top:14px"><h2>Bagikan file ke siswa</h2>
+<input type="file" id="f" multiple> <button onclick="upload()">Unggah</button>
+<div class="muted" style="margin-top:8px">Siswa bisa mengunduh file ini dari halaman siswa.</div>
+<div class="tw"><table><thead><tr><th>File</th><th>Ukuran</th><th>Diunggah</th><th></th></tr></thead><tbody id="files"></tbody></table></div></section>
+<section class="panel"><h2>Tugas yang dikumpulkan <button onclick="dlZip()" style="float:right">Unduh semua (ZIP)</button></h2>
+<div class="muted">Tersimpan juga di folder <code>%LOCALAPPDATA%\MarsaLab\Admin\Submissions</code></div>
+<div class="tw"><table><thead><tr><th>Siswa</th><th>File</th><th>Ukuran</th><th>Waktu</th><th></th></tr></thead><tbody id="subs"></tbody></table></div></section>
+</main>
+<script>
+let TOKEN=localStorage.getItem('marsaToken')||'';
+const H={'X-Marsa-Token':TOKEN};
+document.body.style.visibility='hidden';
+async function gate(){
+  for(;;){
+    if(!TOKEN){
+      TOKEN=(prompt('Masukkan token lab:')||'').trim();
+      if(!TOKEN){document.body.innerHTML='<p style="padding:30px">Token diperlukan. Tekan F5 untuk mengulang.</p>';document.body.style.visibility='visible';return false}
+    }
+    try{
+      const r=await fetch('/api/summary',{headers:{'X-Marsa-Token':TOKEN}});
+      if(r.ok){localStorage.setItem('marsaToken',TOKEN);H['X-Marsa-Token']=TOKEN;document.body.style.visibility='visible';return true}
+      if(r.status===401){alert('Token salah, coba lagi.');TOKEN='';localStorage.removeItem('marsaToken');continue}
+    }catch{}
+    await new Promise(s=>setTimeout(s,1000));
+  }
+}
+document.getElementById('url').textContent=location.origin+'/siswa.html';
+const kb=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+const fmt=d=>new Date(d).toLocaleString('id-ID',{hour12:false});
+function cell(tr,t){const td=document.createElement('td');td.textContent=t;tr.append(td);return td}
+function btn(td,text,cls,fn){const b=document.createElement('button');b.textContent=text;if(cls)b.className=cls;b.onclick=fn;td.append(b)}
+async function api(u,o={}){const r=await fetch(u,{...o,headers:{...H,...(o.headers||{})}});
+ if(r.status===401){localStorage.removeItem('marsaToken');throw Error('Token salah muat ulang halaman.')}
+ if(!r.ok)throw Error((await r.json().catch(()=>({}))).error||'HTTP '+r.status);return r}
+async function upload(){const inp=document.getElementById('f');if(!inp.files.length){alert('Pilih file dulu.');return}
+ for(const file of inp.files){const fd=new FormData();fd.append('file',file);try{await api('/api/files',{method:'POST',body:fd})}catch(e){alert(file.name+': '+e.message)}}
+ inp.value='';load()}
+async function dl(s,n){try{const r=await api('/api/submissions/file?student='+encodeURIComponent(s)+'&name='+encodeURIComponent(n));
+ const a=document.createElement('a');a.href=URL.createObjectURL(await r.blob());a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}catch(e){alert(e.message)}}
+async function dlZip(){try{const r=await api('/api/submissions/zip');const a=document.createElement('a');a.href=URL.createObjectURL(await r.blob());a.download='tugas.zip';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}catch(e){alert(e.message)}}
+  async function load(){try{
+ const files=await (await api('/api/files')).json();const fb=document.getElementById('files');fb.replaceChildren();
+ if(!files.length){const tr=document.createElement('tr');const td=cell(tr,'Belum ada file dibagikan.');td.colSpan=4;td.className='muted';fb.append(tr)}
+ for(const x of files){const tr=document.createElement('tr');cell(tr,x.name);cell(tr,kb(x.size));cell(tr,fmt(x.modifiedUtc));
+  btn(cell(tr,''),'Hapus','danger',async()=>{if(confirm('Hapus '+x.name+'?')){await api('/api/files/'+encodeURIComponent(x.name),{method:'DELETE'});load()}});fb.append(tr)}
+ const subs=await (await api('/api/submissions')).json();const sb=document.getElementById('subs');sb.replaceChildren();
+ if(!subs.length){const tr=document.createElement('tr');const td=cell(tr,'Belum ada tugas masuk.');td.colSpan=5;td.className='muted';sb.append(tr)}
+ for(const x of subs){const tr=document.createElement('tr');cell(tr,x.student);cell(tr,x.name);cell(tr,kb(x.size));cell(tr,fmt(x.modifiedUtc));
+  btn(cell(tr,''),'Unduh','',()=>dl(x.student,x.name));sb.append(tr)}
+ document.getElementById('err').textContent='';
+}catch(e){document.getElementById('err').textContent=e.message}}
+gate().then(ok=>{if(ok){load();setInterval(load,5000)}});
+</script></body></html>
