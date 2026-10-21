@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Text.Json;
 
 namespace MarsaLab.Desktop;
-namespace MarsaLab.Desktop;
 
 public record ClientDto(string ClientId, string ComputerName, string IpAddress, DateTimeOffset LastSeenUtc, string Status);
 public record CommandDto(string Id, string ClientId, string Type, string? Message, DateTimeOffset CreatedUtc, string Status, string? Result);
