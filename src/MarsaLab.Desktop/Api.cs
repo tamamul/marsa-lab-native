@@ -1,6 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 using System.Text.Json;
 
+namespace MarsaLab.Desktop;
 namespace MarsaLab.Desktop;
 
 public record ClientDto(string ClientId, string ComputerName, string IpAddress, DateTimeOffset LastSeenUtc, string Status);
