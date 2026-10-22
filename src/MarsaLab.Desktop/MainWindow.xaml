@@ -7,27 +7,31 @@
         Loaded="Window_Loaded" Closed="Window_Closed">
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="200"/>
+      <ColumnDefinition Width="220"/>
       <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
 
     <!-- ===== Sidebar ===== -->
-    <Border Grid.Column="0" Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,1,0" Padding="12">
+    <Border Grid.Column="0" Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,1,0" Padding="14,16,14,14">
       <DockPanel LastChildFill="False">
         <StackPanel DockPanel.Dock="Top">
-          <StackPanel Orientation="Horizontal" Margin="4,6,0,20">
-            <TextBlock Text="MARSA" FontSize="20" FontWeight="ExtraBold" Foreground="{DynamicResource Accent}"/>
-            <TextBlock Text=" Lab" FontSize="20" FontWeight="ExtraBold"/>
+          <StackPanel Orientation="Horizontal" Margin="4,6,0,18">
+            <TextBlock Text="MARSA" FontSize="22" FontWeight="ExtraBold" Foreground="{DynamicResource Accent}"/>
+            <TextBlock Text=" Lab" FontSize="22" FontWeight="ExtraBold" Foreground="{DynamicResource Text}"/>
           </StackPanel>
+
           <RadioButton x:Name="NavDash" Style="{StaticResource Nav}" GroupName="nav" IsChecked="True" Content="Dashboard" Checked="Nav_Checked"/>
           <RadioButton x:Name="NavHist" Style="{StaticResource Nav}" GroupName="nav" Content="Riwayat perintah" Checked="Nav_Checked"/>
           <RadioButton x:Name="NavFiles" Style="{StaticResource Nav}" GroupName="nav" Content="Berkas &amp; Tugas" Checked="Nav_Checked"/>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom">
-          <StackPanel Orientation="Horizontal" Margin="4,0,0,12">
-            <Ellipse x:Name="ConnDot" Width="9" Height="9" Fill="{DynamicResource Danger}"/>
-            <TextBlock x:Name="ConnText" Text="Menghubungkan..." Margin="8,0,0,0" FontSize="12" Foreground="{DynamicResource Muted}"/>
-          </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,0,0,4">
+          <Border CornerRadius="12" Padding="10,8" Margin="0,0,0,10" Background="{DynamicResource Panel2}" BorderBrush="{DynamicResource Line}" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse x:Name="ConnDot" Width="8" Height="8" Fill="{DynamicResource Danger}"/>
+              <TextBlock x:Name="ConnText" Text="Menghubungkan..." Margin="8,0,0,0" FontSize="12" Foreground="{DynamicResource Muted}"/>
+            </StackPanel>
+          </Border>
           <Button x:Name="ThemeBtn" Style="{StaticResource BtnSec}" Content="Tema terang" HorizontalContentAlignment="Left" Click="Theme_Click"/>
         </StackPanel>
       </DockPanel>
@@ -44,22 +48,22 @@
         </Grid.RowDefinitions>
 
         <UniformGrid Grid.Row="0" Rows="1" Margin="0,0,0,12">
-          <Border Style="{StaticResource Card}" Margin="0,0,10,0">
+          <Border Style="{StaticResource Card}" Margin="0,0,10,0" Padding="16,14">
             <StackPanel>
-              <TextBlock x:Name="TotalText" Text="0" FontSize="26" FontWeight="ExtraBold"/>
-              <TextBlock Text="TOTAL KOMPUTER" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/>
+              <TextBlock x:Name="TotalText" Text="0" FontSize="28" FontWeight="ExtraBold"/>
+              <TextBlock Text="TOTAL KOMPUTER" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" FontWeight="SemiBold"/>
             </StackPanel>
           </Border>
-          <Border Style="{StaticResource Card}" Margin="0,0,10,0">
+          <Border Style="{StaticResource Card}" Margin="0,0,10,0" Padding="16,14">
             <StackPanel>
-              <TextBlock x:Name="OnlineText" Text="0" FontSize="26" FontWeight="ExtraBold" Foreground="{DynamicResource Ok}"/>
-              <TextBlock Text="ONLINE" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/>
+              <TextBlock x:Name="OnlineText" Text="0" FontSize="28" FontWeight="ExtraBold" Foreground="{DynamicResource Ok}"/>
+              <TextBlock Text="ONLINE" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" FontWeight="SemiBold"/>
             </StackPanel>
           </Border>
-          <Border Style="{StaticResource Card}">
+          <Border Style="{StaticResource Card}" Padding="16,14">
             <StackPanel>
-              <TextBlock x:Name="OfflineText" Text="0" FontSize="26" FontWeight="ExtraBold"/>
-              <TextBlock Text="OFFLINE" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/>
+              <TextBlock x:Name="OfflineText" Text="0" FontSize="28" FontWeight="ExtraBold"/>
+              <TextBlock Text="OFFLINE" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" FontWeight="SemiBold"/>
             </StackPanel>
           </Border>
         </UniformGrid>
@@ -67,12 +71,12 @@
         <Grid Grid.Row="1">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="12"/>
+            <ColumnDefinition Width="14"/>
             <ColumnDefinition Width="330"/>
           </Grid.ColumnDefinitions>
 
           <!-- Daftar PC -->
-          <Border Grid.Column="0" Style="{StaticResource Card}">
+          <Border Grid.Column="0" Style="{StaticResource Card}" Padding="14">
             <DockPanel>
               <StackPanel DockPanel.Dock="Top">
                 <DockPanel Margin="0,0,0,10">
@@ -84,13 +88,19 @@
                   </StackPanel>
                   <TextBox x:Name="SearchBox" Style="{StaticResource Tb}" TextChanged="Search_Changed"/>
                 </DockPanel>
-                <WrapPanel Margin="0,0,0,2">
+
+                <WrapPanel Margin="0,0,0,8">
                   <Button Style="{StaticResource Chip}" Content="Pilih semua online" Click="SelectOnline_Click"/>
                   <Button Style="{StaticResource Chip}" Content="Kosongkan pilihan" Click="ClearSel_Click"/>
                   <Button Style="{StaticResource Chip}" Content="Simpan sebagai kelompok" Click="SaveGroup_Click"/>
                 </WrapPanel>
+
                 <ItemsControl x:Name="GroupList">
-                  <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel/>
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <Button Style="{StaticResource Chip}" Content="{Binding Label}" Tag="{Binding Name}" Click="Group_Click">
@@ -101,28 +111,35 @@
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <TextBlock x:Name="GroupHint" Text="Belum ada kelompok. Pilih beberapa komputer lalu simpan sebagai kelompok (klik kanan kelompok untuk menghapus)." FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"/>
-                <Border x:Name="MonBar" Visibility="Collapsed" Margin="0,0,0,8" Padding="10,8" CornerRadius="10" Background="{DynamicResource Panel2}">
+
+                <TextBlock x:Name="GroupHint" Text="Belum ada kelompok. Pilih beberapa komputer lalu simpan sebagai kelompok (klik kanan kelompok untuk menghapus)." FontSize="12" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+
+                <Border x:Name="MonBar" Visibility="Collapsed" Margin="0,0,0,10" Padding="10,8" CornerRadius="12" Background="{DynamicResource Panel2}" BorderBrush="{DynamicResource Line}" BorderThickness="1">
                   <StackPanel Orientation="Horizontal">
-                    <ProgressBar x:Name="MonProg" IsIndeterminate="True" Width="64" Height="5" Margin="0,0,10,0" Foreground="{DynamicResource Accent}" Background="{DynamicResource Line}" BorderThickness="0"/>
+                    <ProgressBar x:Name="MonProg" IsIndeterminate="True" Width="68" Height="5" Margin="0,0,10,0" Foreground="{DynamicResource Accent}" Background="{DynamicResource Line}" BorderThickness="0"/>
                     <TextBlock x:Name="MonText" FontSize="12" Foreground="{DynamicResource Muted}" VerticalAlignment="Center"/>
                   </StackPanel>
                 </Border>
               </StackPanel>
 
-              <Grid>
+              <Grid Margin="0,2,0,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                   <ItemsControl x:Name="PcList">
-                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <WrapPanel/>
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                       <DataTemplate>
-                        <Border Width="170" Margin="0,0,10,10" CornerRadius="10" BorderThickness="1" Background="{DynamicResource Panel2}" Cursor="Hand" MouseLeftButtonUp="Card_Click">
+                        <Border Width="178" Height="216" Margin="0,0,10,10" CornerRadius="18" BorderThickness="1" Background="{DynamicResource Panel2}" Cursor="Hand" MouseLeftButtonUp="Card_Click">
                           <Border.Style>
                             <Style TargetType="Border">
                               <Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
                               <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                   <Setter Property="BorderBrush" Value="{DynamicResource Accent}"/>
+                                  <Setter Property="Background" Value="{DynamicResource Panel}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IsOnline}" Value="False">
                                   <Setter Property="Opacity" Value="0.6"/>
@@ -130,20 +147,26 @@
                               </Style.Triggers>
                             </Style>
                           </Border.Style>
-                          <StackPanel>
-                            <Grid Height="92" Margin="5,5,5,0">
-                              <Border CornerRadius="8" Background="{DynamicResource Bg}" ClipToBounds="True">
-                                <Grid>
-                                  <Image Source="{Binding Thumb}" Stretch="UniformToFill" Visibility="{Binding HasThumb, Converter={StaticResource B2V}}"/>
-                                  <TextBlock Text="{Binding Placeholder}" FontSize="11" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="8" Visibility="{Binding ShowPlaceholder, Converter={StaticResource B2V}}"/>
-                                  <TextBlock Text="PC" FontSize="20" Opacity="0.25" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ShowIcon, Converter={StaticResource B2V}}"/>
-                                </Grid>
-                              </Border>
-                              <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" Width="20" Height="20" CornerRadius="6" Background="{DynamicResource Accent}" Visibility="{Binding IsSelected, Converter={StaticResource B2V}}">
-                                <TextBlock Text="✓" FontWeight="Bold" Foreground="{DynamicResource OnAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                              </Border>
-                            </Grid>
-                            <StackPanel Margin="10,8,10,10">
+
+                          <Grid>
+                            <Grid.RowDefinitions>
+                              <RowDefinition Height="104"/>
+                              <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0" Margin="8,8,8,0" CornerRadius="14" Background="{DynamicResource Bg}" ClipToBounds="True">
+                              <Grid>
+                                <Image Source="{Binding Thumb}" Stretch="UniformToFill" Visibility="{Binding HasThumb, Converter={StaticResource B2V}}"/>
+                                <TextBlock Text="{Binding Placeholder}" FontSize="11" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="10,0"/>
+                                <TextBlock Text="PC" FontSize="24" Opacity="0.18" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ShowIcon, Converter={StaticResource B2V}}"/>
+                              </Grid>
+                            </Border>
+
+                            <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,14,14,0" Width="20" Height="20" CornerRadius="10" Background="{DynamicResource Accent}" Visibility="{Binding IsSelected, Converter={StaticResource B2V}}">
+                              <TextBlock Text="✓" FontWeight="Bold" Foreground="{DynamicResource OnAccent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+
+                            <StackPanel Grid.Row="1" Margin="12,8,12,12">
                               <DockPanel>
                                 <Ellipse DockPanel.Dock="Left" Width="8" Height="8" Margin="0,0,7,0">
                                   <Ellipse.Style>
@@ -159,11 +182,11 @@
                                 </Ellipse>
                                 <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                               </DockPanel>
-                              <TextBlock Text="{Binding Ip}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,3,0,0"/>
+                              <TextBlock Text="{Binding Ip}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,4,0,0"/>
                               <TextBlock Text="{Binding SubText}" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/>
                               <Button Style="{StaticResource Chip}" Content="Lihat &amp; kontrol" Margin="0,8,0,0" HorizontalAlignment="Left" Click="Lihat_Click" Visibility="{Binding IsOnline, Converter={StaticResource B2V}}"/>
                             </StackPanel>
-                          </StackPanel>
+                          </Grid>
                         </Border>
                       </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -175,23 +198,23 @@
           </Border>
 
           <!-- Panel kontrol -->
-          <Border Grid.Column="2" Style="{StaticResource Card}">
+          <Border Grid.Column="2" Style="{StaticResource Card}" Padding="14">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
               <StackPanel>
-                <TextBlock Text="Kontrol" FontSize="16" FontWeight="Bold"/>
-                <TextBlock Margin="0,4,0,0" Foreground="{DynamicResource Muted}" FontSize="12">
+                <TextBlock Text="Kontrol" FontSize="18" FontWeight="Bold"/>
+                <TextBlock Margin="0,6,0,0" Foreground="{DynamicResource Muted}" FontSize="12">
                   <Run Text="Target: "/><Run x:Name="SelText" Text="Semua komputer online" FontWeight="Bold" Foreground="{DynamicResource Text}"/>
                 </TextBlock>
 
-                <TextBlock Text="PESAN / ALAMAT WEBSITE / ALASAN" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,14,0,6"/>
-                <TextBox x:Name="MsgBox" Style="{StaticResource Tb}" Height="82" TextWrapping="Wrap" AcceptsReturn="True" MaxLength="300" VerticalContentAlignment="Top"/>
+                <TextBlock Text="PESAN / ALAMAT WEBSITE / ALASAN" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,16,0,6" FontWeight="SemiBold"/>
+                <TextBox x:Name="MsgBox" Style="{StaticResource Tb}" Height="86" TextWrapping="Wrap" AcceptsReturn="True" MaxLength="300" VerticalContentAlignment="Top"/>
                 <WrapPanel Margin="0,8,0,0">
                   <Button Style="{StaticResource Chip}" Content="Kumpulkan tugas 5 menit lagi." Click="Template_Click"/>
                   <Button Style="{StaticResource Chip}" Content="Harap tenang dan kerjakan sendiri." Click="Template_Click"/>
                   <Button Style="{StaticResource Chip}" Content="Pelajaran selesai, simpan pekerjaan Anda." Click="Template_Click"/>
                 </WrapPanel>
 
-                <TextBlock Text="KOMUNIKASI &amp; LAYAR" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,14,0,6"/>
+                <TextBlock Text="KOMUNIKASI &amp; LAYAR" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,16,0,6" FontWeight="SemiBold"/>
                 <Button Style="{StaticResource Btn}" Content="Kirim pengumuman" Tag="announce" Click="Cmd_Click"/>
                 <UniformGrid Columns="2" Margin="0,8,0,0">
                   <Button Style="{StaticResource BtnSec}" Content="Kunci layar" Tag="lock" Click="Cmd_Click" Margin="0,0,4,0"/>
@@ -199,7 +222,7 @@
                 </UniformGrid>
                 <Button Style="{StaticResource BtnSec}" Content="Buka halaman tugas di PC siswa" Tag="open-share" Click="Cmd_Click" Margin="0,8,0,0"/>
 
-                <TextBlock Text="DAYA" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,14,0,6"/>
+                <TextBlock Text="DAYA" FontSize="10" Foreground="{DynamicResource Muted}" Margin="0,16,0,6" FontWeight="SemiBold"/>
                 <UniformGrid Columns="2">
                   <Button Style="{StaticResource BtnDanger}" Content="Restart" Tag="restart" Click="Cmd_Click" Margin="0,0,4,0"/>
                   <Button Style="{StaticResource BtnDanger}" Content="Matikan" Tag="shutdown" Click="Cmd_Click" Margin="4,0,0,0"/>
@@ -212,24 +235,24 @@
       </Grid>
 
       <!-- RIWAYAT -->
-      <Border x:Name="HistPanel" Style="{StaticResource Card}" Visibility="Collapsed">
+      <Border x:Name="HistPanel" Style="{StaticResource Card}" Visibility="Collapsed" Padding="14">
         <DockPanel>
-          <TextBlock DockPanel.Dock="Top" Text="Riwayat perintah" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
+          <TextBlock DockPanel.Dock="Top" Text="Riwayat perintah" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
           <Grid DockPanel.Dock="Top" Margin="8,0,8,6">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="150"/><ColumnDefinition Width="160"/><ColumnDefinition Width="170"/><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="WAKTU" FontSize="10" Foreground="{DynamicResource Muted}"/>
-            <TextBlock Grid.Column="1" Text="KOMPUTER" FontSize="10" Foreground="{DynamicResource Muted}"/>
-            <TextBlock Grid.Column="2" Text="PERINTAH" FontSize="10" Foreground="{DynamicResource Muted}"/>
-            <TextBlock Grid.Column="3" Text="STATUS" FontSize="10" Foreground="{DynamicResource Muted}"/>
-            <TextBlock Grid.Column="4" Text="HASIL" FontSize="10" Foreground="{DynamicResource Muted}"/>
+            <TextBlock Grid.Column="0" Text="WAKTU" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="1" Text="KOMPUTER" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="2" Text="PERINTAH" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="3" Text="STATUS" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="4" Text="HASIL" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
           </Grid>
           <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <ItemsControl x:Name="HistList">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                  <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="8,9">
+                  <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="8,10">
                     <Grid>
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150"/><ColumnDefinition Width="160"/><ColumnDefinition Width="170"/><ColumnDefinition Width="110"/><ColumnDefinition Width="*"/>
@@ -265,12 +288,12 @@
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Style="{StaticResource Card}" Margin="0,0,0,12">
+        <Border Grid.Row="0" Style="{StaticResource Card}" Margin="0,0,0,12" Padding="14">
           <StackPanel>
             <DockPanel>
               <Button DockPanel.Dock="Right" Style="{StaticResource BtnSec}" Content="Salin alamat" VerticalAlignment="Center" Click="CopyUrl_Click"/>
               <StackPanel>
-                <TextBlock Text="ALAMAT HALAMAN SISWA" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                <TextBlock Text="ALAMAT HALAMAN SISWA" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
                 <TextBlock x:Name="StudentUrlText" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource Accent}" Margin="0,2,0,0"/>
                 <TextBlock x:Name="StudentCodeText" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,2,0,0"/>
               </StackPanel>
@@ -290,9 +313,9 @@
           </Grid.ColumnDefinitions>
 
           <!-- Bagikan file -->
-          <Border Grid.Column="0" Style="{StaticResource Card}" AllowDrop="True" Drop="Share_Drop">
+          <Border Grid.Column="0" Style="{StaticResource Card}" AllowDrop="True" Drop="Share_Drop" Padding="14">
             <DockPanel>
-              <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+              <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                 <Button DockPanel.Dock="Right" Style="{StaticResource Btn}" Content="Unggah file" Click="Upload_Click"/>
                 <TextBlock Text="Bagikan file ke siswa" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
               </DockPanel>
@@ -325,9 +348,9 @@
           </Border>
 
           <!-- Tugas masuk -->
-          <Border Grid.Column="2" Style="{StaticResource Card}">
+          <Border Grid.Column="2" Style="{StaticResource Card}" Padding="14">
             <DockPanel>
-              <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+              <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                 <Button DockPanel.Dock="Right" Style="{StaticResource Btn}" Content="Unduh semua (ZIP)" Margin="8,0,0,0" Click="Zip_Click"/>
                 <Button DockPanel.Dock="Right" Style="{StaticResource BtnSec}" Content="Buka folder" Click="OpenFolder_Click"/>
                 <TextBlock Text="Tugas yang dikumpulkan" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
@@ -338,10 +361,10 @@
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="150"/><ColumnDefinition Width="*"/><ColumnDefinition Width="80"/><ColumnDefinition Width="110"/><ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="SISWA" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                <TextBlock Grid.Column="1" Text="FILE" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                <TextBlock Grid.Column="2" Text="UKURAN" FontSize="10" Foreground="{DynamicResource Muted}"/>
-                <TextBlock Grid.Column="3" Text="WAKTU" FontSize="10" Foreground="{DynamicResource Muted}"/>
+                <TextBlock Grid.Column="0" Text="SISWA" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Column="1" Text="FILE" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Column="2" Text="UKURAN" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Column="3" Text="WAKTU" FontSize="10" Foreground="{DynamicResource Muted}" FontWeight="SemiBold"/>
               </Grid>
               <Grid>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -374,7 +397,7 @@
 
     <!-- Toast -->
     <Border x:Name="ToastBox" Grid.Column="1" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20"
-            Padding="16,10" CornerRadius="10" Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Accent}" BorderThickness="1">
+            Padding="16,10" CornerRadius="14" Background="{DynamicResource Panel}" BorderBrush="{DynamicResource Accent}" BorderThickness="1">
       <TextBlock x:Name="ToastText" MaxWidth="640" TextWrapping="Wrap"/>
     </Border>
   </Grid>
