@@ -3,25 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
   <Application.Resources>
-    <SolidColorBrush x:Key="Bg" Color="#0B141A"/>
-    <SolidColorBrush x:Key="Panel" Color="#13232B"/>
-    <SolidColorBrush x:Key="Panel2" Color="#1A2F39"/>
-    <SolidColorBrush x:Key="Line" Color="#29424C"/>
-    <SolidColorBrush x:Key="Text" Color="#EEF8FA"/>
-    <SolidColorBrush x:Key="Muted" Color="#9BB1BA"/>
-    <SolidColorBrush x:Key="Accent" Color="#00C2D1"/>
-    <SolidColorBrush x:Key="OnAccent" Color="#00272B"/>
-    <SolidColorBrush x:Key="Ok" Color="#2ECC71"/>
-    <SolidColorBrush x:Key="Danger" Color="#E5484D"/>
-    <SolidColorBrush x:Key="Warn" Color="#F5A524"/>
+    <SolidColorBrush x:Key="Bg" Color="#0F1720"/>
+    <SolidColorBrush x:Key="Panel" Color="#15232D"/>
+    <SolidColorBrush x:Key="Panel2" Color="#1C2F39"/>
+    <SolidColorBrush x:Key="Line" Color="#2C4450"/>
+    <SolidColorBrush x:Key="Text" Color="#EDF5F8"/>
+    <SolidColorBrush x:Key="Muted" Color="#9AB0B8"/>
+    <SolidColorBrush x:Key="Accent" Color="#3AA0FF"/>
+    <SolidColorBrush x:Key="OnAccent" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Ok" Color="#3CCB7B"/>
+    <SolidColorBrush x:Key="Danger" Color="#E25555"/>
+    <SolidColorBrush x:Key="Warn" Color="#F0B429"/>
     <BooleanToVisibilityConverter x:Key="B2V"/>
 
     <Style x:Key="Card" TargetType="Border">
       <Setter Property="Background" Value="{DynamicResource Panel}"/>
       <Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
       <Setter Property="BorderThickness" Value="1"/>
-      <Setter Property="CornerRadius" Value="14"/>
-      <Setter Property="Padding" Value="14"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="Padding" Value="12"/>
     </Style>
 
     <Style x:Key="Btn" TargetType="Button">
@@ -29,19 +29,20 @@
       <Setter Property="Foreground" Value="{DynamicResource OnAccent}"/>
       <Setter Property="BorderBrush" Value="Transparent"/>
       <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="FontSize" Value="13"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="Padding" Value="14,9"/>
+      <Setter Property="Padding" Value="12,8"/>
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="Button">
             <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="9" Padding="{TemplateBinding Padding}">
               <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bd" Property="Opacity" Value="0.88"/></Trigger>
-              <Trigger Property="IsPressed" Value="True"><Setter TargetName="bd" Property="Opacity" Value="0.7"/></Trigger>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="bd" Property="Opacity" Value="0.9"/></Trigger>
+              <Trigger Property="IsPressed" Value="True"><Setter TargetName="bd" Property="Opacity" Value="0.76"/></Trigger>
               <Trigger Property="IsEnabled" Value="False"><Setter TargetName="bd" Property="Opacity" Value="0.45"/></Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -58,7 +59,7 @@
       <Setter Property="Foreground" Value="White"/>
     </Style>
     <Style x:Key="Chip" TargetType="Button" BasedOn="{StaticResource BtnSec}">
-      <Setter Property="Padding" Value="11,5"/>
+      <Setter Property="Padding" Value="9,5"/>
       <Setter Property="FontSize" Value="12"/>
       <Setter Property="FontWeight" Value="Normal"/>
       <Setter Property="Margin" Value="0,0,6,6"/>
@@ -66,12 +67,13 @@
 
     <Style x:Key="Nav" TargetType="RadioButton">
       <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+      <Setter Property="FontSize" Value="13"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="RadioButton">
-            <Border x:Name="bd" CornerRadius="10" Padding="14,10" Margin="0,0,0,6" Background="Transparent">
+            <Border x:Name="bd" CornerRadius="8" Padding="11,9" Margin="0,0,0,5" Background="Transparent">
               <ContentPresenter/>
             </Border>
             <ControlTemplate.Triggers>
@@ -88,11 +90,12 @@
 
     <Style x:Key="FilterChip" TargetType="RadioButton">
       <Setter Property="Foreground" Value="{DynamicResource Text}"/>
+      <Setter Property="FontSize" Value="12"/>
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="RadioButton">
-            <Border x:Name="bd" CornerRadius="16" Padding="12,6" Margin="6,0,0,0" Background="{DynamicResource Panel2}"
+            <Border x:Name="bd" CornerRadius="16" Padding="10,6" Margin="6,0,0,0" Background="{DynamicResource Panel2}"
                     BorderBrush="{DynamicResource Line}" BorderThickness="1">
               <ContentPresenter HorizontalAlignment="Center"/>
             </Border>
@@ -110,10 +113,11 @@
     <Style x:Key="PillToggle" TargetType="ToggleButton">
       <Setter Property="Foreground" Value="{DynamicResource Text}"/>
       <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="FontSize" Value="12"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="ToggleButton">
-            <Border x:Name="bd" CornerRadius="16" Padding="14,6" Margin="6,0,0,0" Background="{DynamicResource Panel2}"
+            <Border x:Name="bd" CornerRadius="16" Padding="12,6" Margin="6,0,0,0" Background="{DynamicResource Panel2}"
                     BorderBrush="{DynamicResource Line}" BorderThickness="1">
               <ContentPresenter HorizontalAlignment="Center"/>
             </Border>
@@ -134,12 +138,13 @@
       <Setter Property="CaretBrush" Value="{DynamicResource Text}"/>
       <Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
       <Setter Property="BorderThickness" Value="1"/>
-      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="Padding" Value="9,7"/>
+      <Setter Property="FontSize" Value="12"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="TextBox">
             <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
               <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
             </Border>
           </ControlTemplate>
@@ -152,7 +157,7 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="ScrollBar">
-            <Grid Background="Transparent" Width="12">
+            <Grid Background="Transparent" Width="10">
               <Track x:Name="PART_Track" IsDirectionReversed="True">
                 <Track.DecreaseRepeatButton>
                   <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="False"/>
@@ -164,7 +169,7 @@
                   <Thumb>
                     <Thumb.Template>
                       <ControlTemplate TargetType="Thumb">
-                        <Border Background="{DynamicResource Line}" CornerRadius="5" Margin="2"/>
+                        <Border Background="{DynamicResource Line}" CornerRadius="5" Margin="1"/>
                       </ControlTemplate>
                     </Thumb.Template>
                   </Thumb>
