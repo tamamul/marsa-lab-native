@@ -23,6 +23,7 @@ var studentCode = builder.Configuration["Lab:StudentCode"] ?? "";
 var maxUploadBytes = Math.Clamp(builder.Configuration.GetValue<int>("Lab:MaxUploadMB", 50), 1, 500) * 1024L * 1024L;
 builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = maxUploadBytes);
 builder.Services.Configure<FormOptions>(o => o.MultipartBodyLengthLimit = maxUploadBytes);
+builder.Services.AddHostedService<RelayConnector>();
 var app = builder.Build();
 var clients = new ConcurrentDictionary<string, ClientStatus>(StringComparer.OrdinalIgnoreCase);
 var commands = new ConcurrentDictionary<string, LabCommand>(StringComparer.OrdinalIgnoreCase);
