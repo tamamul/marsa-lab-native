@@ -1,0 +1,11 @@
+{
+  "Port": 5090,
+  "Labs": {
+    "lab1": { "Name": "Lab Komputer 1", "Key": "ISI_DENGAN_HASIL_PERINTAH_newkey" }
+  },
+  "Users": [
+    { "Name": "guru1", "Role": "controller", "Hash": "ISI_DENGAN_HASIL_PERINTAH_hash" },
+    { "Name": "kepsek", "Role": "viewer", "Hash": "ISI_DENGAN_HASIL_PERINTAH_hash" }
+  ],
+  "Logging": { "LogLevel": { "Default": "Information", "Microsoft.AspNetCore": "Warning" } }
+}
