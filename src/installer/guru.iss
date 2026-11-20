@@ -51,6 +51,7 @@ Type: filesandordirs; Name: "{app}"
 [Code]
 var
   TokenPage: TInputQueryWizardPage;
+  RelayPage: TInputQueryWizardPage;
 
 function IsAlnum(const S: String): Boolean;
 var i: Integer; c: Char;
@@ -99,12 +100,20 @@ begin
   TokenPage.Values[0] := ExpandConstant('{param:TOKEN|' + NewToken('t1.txt') + '}');
   TokenPage.Values[1] := ExpandConstant('{param:CODE|}');
   TokenPage.Values[2] := ExpandConstant('{param:CTOKEN|' + NewToken('t2.txt') + '}');
+  RelayPage := CreateInputQueryPage(TokenPage.ID, 'Akses jarak jauh (opsional)', 'Sambungan ke gerbang',
+    'Kosongkan semua kolom jika tidak memakai akses jarak jauh. Nilainya dari administrator gerbang (server Lubuntu).');
+  RelayPage.Add('Alamat gerbang (contoh https://relay.marsa9.com):', False);
+  RelayPage.Add('ID lab (contoh lab1):', False);
+  RelayPage.Add('Kunci lab (dari perintah newkey):', False);
+  RelayPage.Values[0] := ExpandConstant('{param:RELAYURL|}');
+  RelayPage.Values[1] := ExpandConstant('{param:LABID|}');
+  RelayPage.Values[2] := ExpandConstant('{param:LABKEY|}');
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
   // Saat upgrade, pertahankan konfigurasi yang sudah ada
-  Result := (PageID = TokenPage.ID) and FileExists(ConfigPath);
+  Result := ((PageID = TokenPage.ID) or (PageID = RelayPage.ID)) and FileExists(ConfigPath);
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
@@ -118,6 +127,18 @@ begin
     begin MsgBox('Kode kelas hanya boleh huruf dan angka.', mbError, MB_OK); Result := False; end
     else if (Length(TokenPage.Values[2]) < 24) or not IsAlnum(TokenPage.Values[2]) or (TokenPage.Values[2] = TokenPage.Values[0]) then
     begin MsgBox('Token client minimal 24 karakter (huruf/angka) dan harus berbeda dari token admin.', mbError, MB_OK); Result := False; end;
+  end;
+  if CurPageID = RelayPage.ID then
+  begin
+    if (RelayPage.Values[0] <> '') or (RelayPage.Values[1] <> '') or (RelayPage.Values[2] <> '') then
+    begin
+      if (Pos('https://', Lowercase(RelayPage.Values[0])) <> 1) or (Pos('"', RelayPage.Values[0]) > 0) or (Pos('\', RelayPage.Values[0]) > 0) then
+      begin MsgBox('Alamat gerbang harus diawali https:// dan tanpa tanda kutip.', mbError, MB_OK); Result := False; end
+      else if (RelayPage.Values[1] = '') or not IsAlnum(RelayPage.Values[1]) or (RelayPage.Values[1] <> Lowercase(RelayPage.Values[1])) then
+      begin MsgBox('ID lab hanya huruf kecil dan angka (contoh: lab1).', mbError, MB_OK); Result := False; end
+      else if (Length(RelayPage.Values[2]) < 24) or not IsAlnum(RelayPage.Values[2]) then
+      begin MsgBox('Kunci lab minimal 24 karakter, hanya huruf dan angka.', mbError, MB_OK); Result := False; end;
+    end;
   end;
 end;
 
@@ -133,6 +154,6 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep = ssPostInstall) and not FileExists(ConfigPath) then
     SaveStringToFile(ConfigPath,
-    '{"Lab":{"Port":5080,"Token":"' + TokenPage.Values[0] + '","ClientToken":"' + TokenPage.Values[2] + '","OfflineAfterSeconds":15,"StudentCode":"' + TokenPage.Values[1] + '","MaxUploadMB":50},"Logging":{"LogLevel":{"Default":"Information","Microsoft.AspNetCore":"Warning"}}}',
+    '{"Lab":{"Port":5080,"Token":"' + TokenPage.Values[0] + '","ClientToken":"' + TokenPage.Values[2] + '","OfflineAfterSeconds":15,"StudentCode":"' + TokenPage.Values[1] + '","MaxUploadMB":50},"Relay":{"Url":"' + RelayPage.Values[0] + '","LabId":"' + RelayPage.Values[1] + '","Key":"' + RelayPage.Values[2] + '"},"Logging":{"LogLevel":{"Default":"Information","Microsoft.AspNetCore":"Warning"}}}',
       False);
 end;
