@@ -67,4 +67,5 @@ jobs:
           path: |
             src/out/MarsaLab-Guru-Setup.exe
             src/out/MarsaLab-Client-Setup.exe
+            : out/MarsaLab-Gateway-linux.zip
           retention-days: 14
