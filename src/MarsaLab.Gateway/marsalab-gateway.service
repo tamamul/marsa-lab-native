@@ -1,0 +1,17 @@
+[Unit]
+Description=MARSA Lab Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=marsalab
+WorkingDirectory=/opt/marsalab-gateway
+ExecStart=/opt/marsalab-gateway/MarsaLab.Gateway
+Restart=always
+RestartSec=3
+Environment=DOTNET_BUNDLE_EXTRACT_BASE_DIR=/opt/marsalab-gateway/.net
+NoNewPrivileges=true
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
