@@ -49,8 +49,10 @@ jobs:
 
       - name: Paketkan Gateway
         shell: pwsh
-        run: Compress-Archive -Path .\dist\gateway\* -DestinationPath .\out\MarsaLab-Gateway-linux.zip
-
+        run: |
+          New-Item -ItemType Directory -Force -Path .\src\out | Out-Null
+          Compress-Archive -Path .\dist\gateway\* -DestinationPath .\src\out\MarsaLab-Gateway-linux.zip -Force
+          
       - name: Buat installer
         shell: pwsh
         run: |
@@ -67,5 +69,5 @@ jobs:
           path: |
             src/out/MarsaLab-Guru-Setup.exe
             src/out/MarsaLab-Client-Setup.exe
-            : out/MarsaLab-Gateway-linux.zip
+            src/out/MarsaLab-Gateway-linux.zip
           retention-days: 14
